@@ -7,16 +7,20 @@ var AccessToken = require('twilio').jwt.AccessToken;
 var VideoGrant = AccessToken.VideoGrant;
 
 var app = express();
-var webpackDevMiddleware = require("webpack-dev-middleware");
-var webpackHotMiddleware = require("webpack-hot-middleware");
-var webpackConfig = require("./webpack.config.js");
-const webpackCompiler = webpack(webpackConfig);
-app.use(webpackDevMiddleware(webpackCompiler, {
-    hot: true
-}));
-app.use(webpackHotMiddleware(webpackCompiler));
-app.use(express.static(path.join(__dirname, "app")));
-console.log(process.env, '!!!!!')
+if(process.env.NODE_ENV === "DEV") {
+    var webpackDevMiddleware = require("webpack-dev-middleware");
+    var webpackHotMiddleware = require("webpack-hot-middleware");
+    var webpackConfig = require("./webpack.config.js");
+    const webpackCompiler = webpack(webpackConfig);
+    app.use(webpackDevMiddleware(webpackCompiler, {
+        hot: true
+    }));
+    app.use(webpackHotMiddleware(webpackCompiler));
+    app.use(express.static(path.join(__dirname, "app")));
+} else if (process.env.NODE_ENV === "PROD") { // Configuration for production environment
+    app.use(express.static(path.join(__dirname, "dist")));
+}
+
 app.get('/token', function(request, response) {
     var identity = faker.name.findName();
 
