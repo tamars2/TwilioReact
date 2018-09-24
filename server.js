@@ -17,7 +17,7 @@ if(process.env.NODE_ENV === "DEV") {
     }));
     app.use(webpackHotMiddleware(webpackCompiler));
     app.use(express.static(path.join(__dirname, "app")));
-} else if (process.env.NODE_ENV === "PROD") { // Configuration for production environment
+} else if (process.env.NODE_ENV === "PROD") {
     app.use(express.static(path.join(__dirname, "dist")));
 }
 

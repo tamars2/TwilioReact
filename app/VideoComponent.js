@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import Video from 'twilio-video';
 import axios from 'axios';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
-import { Card, CardHeader, CardText } from 'material-ui/Card';
+// import RaisedButton from 'material-ui/RaisedButton';
+// import TextField from 'material-ui/TextField';
+// import { Card, CardHeader, CardText } from 'material-ui/Card';
 
 export default class VideoComponent extends Component {
  constructor(props) {
@@ -39,6 +39,7 @@ export default class VideoComponent extends Component {
       }
 
   joinRoom() {
+    console.log('THIS JOIN ROOM')
     /* Show an error message on room name text field if user tries joining a room without providing a room name. This is enabled by setting `roomNameErr` to true */
     if (!this.state.roomName.trim()) {
         this.setState({ roomNameErr: true });
@@ -163,26 +164,27 @@ render() {
    show `Leave Room` button.
   */
   let joinOrLeaveRoomButton = this.state.hasJoinedRoom ? (
-  <RaisedButton label="Leave Room" secondary={true} onClick={this.leaveRoom} />) : (
-  <RaisedButton label="Join Room" primary={true} onClick={this.joinRoom} />);
+  <button label="Leave Room" onClick={this.leaveRoom}>Leave Room</button>) : (
+  <button label="Join Room" onClick={this.joinRoom}>Join Room</button>);
   return (
-    <Card>
-      <CardText>
+    // <Card>
+    //   <CardText>
         <div className="flex-container">
           {showLocalTrack} {/* Show local track if available */}
           <div className="flex-item">
           {/* The following text field is used to enter a room name. It calls  `handleRoomNameChange` method when the text changes which sets the `roomName` variable initialized in the state. */}
-          <TextField hintText="Room Name" onChange={this.handleRoomNameChange}
+          <input type="text" name="room" onChange={this.handleRoomNameChange}></input>
+          {/* <TextField hintText="Room Name" onChange={this.handleRoomNameChange}
             errorText = {this.state.roomNameErr ? 'Room Name is required' : undefined}
-          />
+          /> */}
         <br />
         {joinOrLeaveRoomButton}  {/* Show either ‘Leave Room’ or ‘Join Room’ button */}
         </div>
       {/* The following div element shows all remote media (other participant’s tracks) */}
       <div className="flex-item" ref="remoteMedia" id="remote-media" />
       </div>
-      </CardText>
-    </Card>
+    //   </CardText>
+    // </Card>
   );
 }
 }
