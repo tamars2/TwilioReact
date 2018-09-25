@@ -112,7 +112,8 @@ app.get('/token', function(request, response) {
                     httpOnly: false, // The cookie only accessible by the web server
                     signed: false // Indicates if the cookie should be signed
                 }
-
+                console.log(process.env.TWILIO_ACCOUNT_SID)
+                console.log(process.env.TWILIO_AUTH_TOKEN)
                 const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
                 response.cookie('joinRoom', request.params.room, options)
                 response.redirect('/')
