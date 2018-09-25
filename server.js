@@ -86,6 +86,7 @@ app.get('/token', function(request, response) {
         })
 
         app.get('/join/:room', (request, response) => {
+            console.log('TEST')
             const AccessToken = require('twilio').jwt.AccessToken
             const VideoGrant = AccessToken.VideoGrant
 
@@ -104,19 +105,19 @@ app.get('/token', function(request, response) {
                 process.env.TWILIO_API_SECRET
                 )
 
-                token.addGrant(videoGrant)
-                token.identity = identity
+            token.addGrant(videoGrant)
+            token.identity = identity
 
-                let options = {
-                    maxAge: 1000 * 60 * 15, // would expire after 15 minutes
-                    httpOnly: false, // The cookie only accessible by the web server
-                    signed: false // Indicates if the cookie should be signed
-                }
-                console.log(process.env.TWILIO_ACCOUNT_SID)
-                console.log(process.env.TWILIO_AUTH_TOKEN)
-                const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
-                response.cookie('joinRoom', request.params.room, options)
-                response.redirect('/')
+            let options = {
+                maxAge: 1000 * 60 * 15, // would expire after 15 minutes
+                httpOnly: false, // The cookie only accessible by the web server
+                signed: false // Indicates if the cookie should be signed
+            }
+            console.log(process.env.TWILIO_ACCOUNT_SID)
+            console.log(process.env.TWILIO_AUTH_TOKEN)
+            const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
+            response.cookie('joinRoom', request.params.room, options)
+            response.redirect('/')
             })
 
         app.get('/', (request, response)=> {
