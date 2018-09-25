@@ -3,6 +3,7 @@ import { instanceOf } from 'prop-types'
 import Video from 'twilio-video'
 import axios from 'axios'
 import { withCookies, Cookies } from 'react-cookie'
+import PropertyInfo from './PropertyInfo'
 class VideoComponent extends Component {
   static propTypes = {
     cookies: instanceOf(Cookies).isRequired
@@ -199,16 +200,17 @@ render() {
   <button label="Leave Room" onClick={this.leaveRoom}>Leave Room</button>) : (
   <button label="Join Room" onClick={this.joinRoom}>Join Room</button>)
   return (
-    <div className="flex-container">
+    <div>
       {showLocalTrack} {/* Show local track if available */}
-      <div className="flex-item">
+      <div>
         {/* The following text field is used to enter a room name. It calls  `handleRoomNameChange` method when the text changes which sets the `roomName` variable initialized in the state. */}
         <input type="text" name="room" onChange={this.handleRoomNameChange}></input>
         <br />
         {joinOrLeaveRoomButton}  {/* Show either ‘Leave Room’ or ‘Join Room’ button */}
       </div>
       {/* The following div element shows all remote media (other participant’s tracks) */}
-      <div className="flex-item" ref="remoteMedia" id="remote-media" />
+      <div ref="remoteMedia" id="remote-media" />
+      <PropertyInfo />
     </div>
   )
 }
