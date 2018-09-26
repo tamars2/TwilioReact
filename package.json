@@ -11,6 +11,7 @@
     "dotenv": "^5.0.0",
     "express": "^4.16.2",
     "faker": "^4.1.0",
+    "fingerprintjs2": "^1.8.1",
     "material-ui": "^0.20.0",
     "prop-types": "^15.6.2",
     "query-string": "^6.1.0",

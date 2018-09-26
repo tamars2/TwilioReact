@@ -5,6 +5,7 @@ var webpack = require("webpack")
 var faker = require("faker")
 var AccessToken = require('twilio').jwt.AccessToken
 var VideoGrant = AccessToken.VideoGrant
+var ChatTokenProvider = require('./lib/tokenprovider');
 
 var app = express()
 if(process.env.NODE_ENV === "DEV") {
@@ -21,6 +22,12 @@ if(process.env.NODE_ENV === "DEV") {
     app.use(express.static(path.join(__dirname, "dist")))
 }
 
+var chatTokenProvider = new ChatTokenProvider({
+  accountSid: process.env.TWILIO_ACCOUNT_SID,
+  signingKeySid: process.env.TWILIO_API_KEY,
+  signingKeySecret: process.env.TWILIO_API_SECRET,
+  serviceSid: process.env.TWILIO_CHAT_SERVICE_SID,
+});
 
 app.get('/token', function(request, response) {
     var identity = faker.name.findName()
@@ -45,6 +52,19 @@ app.get('/token', function(request, response) {
             token: token.toJwt()
         })
     })
+
+
+app.get('/getChatToken', function(req, res) {
+  var identity = req.query && req.query.identity;
+  var endpointId = req.query && req.query.endpointId;
+
+  if (!identity || !endpointId) {
+    res.status(400).send('getToken requires both an Identity and an Endpoint ID');
+  }
+
+  var token = chatTokenProvider.getToken(identity, endpointId);
+  res.send(token);
+});
 
     app.get('/create/:room', (request, response) => {
         const AccessToken = require('twilio').jwt.AccessToken
