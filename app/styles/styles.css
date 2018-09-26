@@ -11,7 +11,7 @@ button {
   color: #fff;
 }
 
-video {
+video, #remote-media {
   position: absolute;
   left: 0;
   top: 59px;
@@ -135,9 +135,4 @@ video {
   flex: 1;
   flex-direction: column;
   overflow-y: scroll;
-}
-
-#remote-media video {
-  width: inherit;
-  height: 200px;
 }
