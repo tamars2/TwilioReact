@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import PropertyInfo from './PropertyInfo'
 import Chat from './Chat'
+import ChatInput from './ChatInput'
 
 class PropertyChatBox extends Component {
   constructor(props) {
     super(props)
+    this.onNewMessage = this.onNewMessage.bind(this)
 
     // Oldest first
     this.state = {
@@ -21,11 +23,22 @@ class PropertyChatBox extends Component {
     }
   }
 
+  onNewMessage(message) {
+    console.log('got a new message! time to hook it up', message)
+    this.setState({
+      messages: [
+        ...this.state.messages,
+        { id: Math.random(), from: 'Me', message }
+      ]
+    })
+  }
+
   render() {
     return (
       <div className="property-chat-box">
         <PropertyInfo />
         <Chat messages={this.state.messages} />
+        <ChatInput onSubmit={this.onNewMessage} />
       </div>
     )
   }

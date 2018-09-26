@@ -9,7 +9,6 @@ class Chat extends Component {
   constructor(props) {
     super(props)
     this.messageList = React.createRef()
-
   }
 
   // Thank you Google
