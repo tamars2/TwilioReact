@@ -2,7 +2,7 @@ require("dotenv").config()
 var path = require("path")
 var express = require("express")
 var webpack = require("webpack")
-var faker = require("faker")
+// var faker = require("faker")
 var AccessToken = require('twilio').jwt.AccessToken
 var VideoGrant = AccessToken.VideoGrant
 var ChatTokenProvider = require('./lib/tokenprovider');
@@ -30,8 +30,8 @@ var chatTokenProvider = new ChatTokenProvider({
 });
 
 app.get('/token', function(request, response) {
-    var identity = faker.name.findName()
-
+    // var identity = faker.name.findName()
+    console.log(request.query)
     // Create an access token which we will sign and return to the client,
     // containing the grant we just created
     var token = new AccessToken(
@@ -41,14 +41,14 @@ app.get('/token', function(request, response) {
         )
 
         // Assign the generated identity to the token
-        token.identity = identity
+        token.identity = request.query.identity
 
         const grant = new VideoGrant()
         // Grant token access to the Video API features
         token.addGrant(grant)
         // Serialize the token to a JWT string and include it in a JSON response
         response.send({
-            identity: identity,
+            identity: request.query.identity,
             token: token.toJwt()
         })
     })
