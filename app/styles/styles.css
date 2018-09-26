@@ -26,6 +26,14 @@ video {
   bottom: 0;
   padding: 20px;
   background: linear-gradient(0deg, black, rgba(0, 0, 0, 0));
+  text-align: center;
+}
+
+.property-chat-inner {
+  max-width: 700px;
+  width: 100%;
+  display: inline-block;
+  text-align: left;
 }
 
 .chat-message-wrapper {
@@ -60,8 +68,9 @@ video {
   background: #000;
   color: #9B9B9B;
   border: 0;
-  line-height: 40px;
-  padding-left: 8px;
+  line-height: 16px;
+  margin: 0;
+  padding: 12px 0 12px 8px;
   width: 61%;
 }
 

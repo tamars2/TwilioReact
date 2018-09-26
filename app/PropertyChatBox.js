@@ -36,9 +36,11 @@ class PropertyChatBox extends Component {
   render() {
     return (
       <div className="property-chat-box">
-        <PropertyInfo />
-        <Chat messages={this.state.messages} />
-        <ChatInput onSubmit={this.onNewMessage} />
+        <div className="property-chat-inner">
+          <PropertyInfo />
+          <Chat messages={this.state.messages} />
+          <ChatInput onSubmit={this.onNewMessage} />
+        </div>
       </div>
     )
   }
