@@ -3,6 +3,7 @@ import { instanceOf } from 'prop-types'
 import Video from 'twilio-video'
 import axios from 'axios'
 import { withCookies, Cookies } from 'react-cookie'
+import queryString from 'query-string'
 import PropertyChatBox from './PropertyChatBox'
 class VideoComponent extends Component {
   static propTypes = {
@@ -28,7 +29,11 @@ class VideoComponent extends Component {
     this.handleRoomNameChange = this.handleRoomNameChange.bind(this)
     this.roomJoined = this.roomJoined.bind(this)
     this.leaveRoom = this.leaveRoom.bind(this)
-    this.detachParticipantTracks =this.detachParticipantTracks.bind(this)
+    this.detachParticipantTracks = this.detachParticipantTracks.bind(this)
+    this.getDevices = this.getDevices.bind(this)
+    this.detachTracks = this.detachTracks.bind(this)
+    this.attachTracks = this.attachTracks.bind(this)
+    this.updateVideoDevice = this.updateVideoDevice.bind(this)
   }
 
   componentDidMount() {
@@ -62,6 +67,7 @@ class VideoComponent extends Component {
           alert('Could not connect to Twilio: ' + error.message)
         })
       }
+      navigator.mediaDevices.enumerateDevices().then(this.getDevices)
     })
   }
 
@@ -104,13 +110,76 @@ class VideoComponent extends Component {
     })
   }
 
+  detachTracks(tracks) {
+    tracks.forEach(track => {
+      track.detach().forEach(detachedElement => {
+        detachedElement.remove()
+      })
+    })
+  }
+
+  detachParticipantTracks(participant) {
+    var tracks = Array.from(participant.tracks.values())
+    this.detachTracks(tracks)
+  }
+
   // Attach the Participant's Tracks to the DOM.
   attachParticipantTracks(participant, container) {
     var tracks = Array.from(participant.tracks.values())
     this.attachTracks(tracks, container)
   }
 
+  getDevices(mediaDevices) {
+    const select = document.getElementById('video-devices')
+    select.innerHTML = ''
+    select.appendChild(document.createElement('option'))
+    let count = 1
+    mediaDevices.forEach(mediaDevice => {
+      if (mediaDevice.kind === 'videoinput') {
+        const option = document.createElement('option')
+        option.value = mediaDevice.deviceId
+        const label = mediaDevice.label || `Camera ${count  }`
+        const textNode = document.createTextNode(label)
+        option.appendChild(textNode)
+        select.appendChild(option)
+        count += 1
+      }
+    })
+  }
+
+  updateVideoDevice(event) {
+    const select = event.target
+    const localParticipant = room.localParticipant
+
+    if (select.value !== '') {
+      Video.createLocalVideoTrack({
+        deviceId: { exact: select.value }
+      }).then( (localVideoTrack) => {
+        const tracks = Array.from(localParticipant.videoTracks.values())
+        localParticipant.unpublishTracks(tracks)
+        console.log(localParticipant.identity + " removed track: " + tracks[0].kind)
+        tracks.forEach(track => {
+          track.detach().forEach(detachedElement => {
+            detachedElement.remove()
+          })
+        })
+        localParticipant.publishTrack(localVideoTrack)
+        console.log(localParticipant.identity + " added track: " + localVideoTrack.kind)
+        const previewContainer = this.refs.localMedia
+        if (!previewContainer.querySelector('video')) {
+          this.attachParticipantTracks(room.localParticipant, previewContainer)
+        }
+        // attachTracks([localVideoTrack], previewContainer)
+      })
+    }
+  }
+
   roomJoined(room) {
+    window.room = room
+    // navigator.mediaDevices.enumerateDevices().then(this.getDevices)
+    const select = document.getElementById('video-devices')
+    console.log(select)
+    select.addEventListener('change', this.updateVideoDevice)
     // Called when a participant joins a room
     console.log("Joined as '" + this.state.identity + "'")
     this.setState({
@@ -166,31 +235,19 @@ class VideoComponent extends Component {
       this.detachParticipantTracks(room.localParticipant)
       room.participants.forEach(this.detachParticipantTracks)
       this.state.activeRoom = null
+      select.removeEventListener('change', this.updateVideoDevice)
       this.setState({ hasJoinedRoom: false, localMediaAvailable: false })
     })
   }
 
-  detachTracks(tracks) {
-    tracks.forEach(track => {
-      track.detach().forEach(detachedElement => {
-        detachedElement.remove()
-      })
-    })
-  }
-
-  detachParticipantTracks(participant) {
-    var tracks = Array.from(participant.tracks.values())
-    this.detachTracks(tracks)
-  }
-
 render() {
+  const queryParams = queryString.parse(window.location.search)
   /*
    Controls showing of the local track
    Only show video track after user has joined a room else show nothing
   */
   let showLocalTrack = this.state.localMediaAvailable ? (
     <div className="flex-item"><div ref="localMedia" /> </div>) : ''
-  console.log(showLocalTrack)
   /*
    Controls showing of ‘Join Room’ or ‘Leave Room’ button.
    Hide 'Join Room' button if user has already joined a room otherwise
@@ -204,7 +261,7 @@ render() {
       {showLocalTrack} {/* Show local track if available */}
       <div>
         {/* The following text field is used to enter a room name. It calls  `handleRoomNameChange` method when the text changes which sets the `roomName` variable initialized in the state. */}
-        <input type="text" name="room" onChange={this.handleRoomNameChange}></input>
+        <input type="text" name="room" onChange={this.handleRoomNameChange}></input> | <select id="video-devices"></select>
         <br />
         {joinOrLeaveRoomButton}  {/* Show either ‘Leave Room’ or ‘Join Room’ button */}
       </div>
