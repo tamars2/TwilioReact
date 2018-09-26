@@ -3,7 +3,7 @@ import { instanceOf } from 'prop-types'
 import Video from 'twilio-video'
 import axios from 'axios'
 import { withCookies, Cookies } from 'react-cookie'
-import PropertyInfo from './PropertyInfo'
+import PropertyChatBox from './PropertyChatBox'
 class VideoComponent extends Component {
   static propTypes = {
     cookies: instanceOf(Cookies).isRequired
@@ -210,7 +210,7 @@ render() {
       </div>
       {/* The following div element shows all remote media (other participant’s tracks) */}
       <div ref="remoteMedia" id="remote-media" />
-      <PropertyInfo />
+      <PropertyChatBox />
     </div>
   )
 }
