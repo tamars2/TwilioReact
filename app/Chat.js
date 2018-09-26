@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import PropertyInfo from './PropertyInfo'
 import ChatMessages from './ChatMessages'
 import ChatInput from './ChatInput'
@@ -7,6 +8,10 @@ import axios from 'axios'
 import queryString from 'query-string'
 
 class Chat extends Component {
+  static propTypes = {
+    userName: PropTypes.string,
+  }
+
   constructor(props) {
     super(props)
     this.setActiveChannel = this.setActiveChannel.bind(this)
@@ -21,7 +26,6 @@ class Chat extends Component {
     this.state = {
       token: null,
       userEmail: 'text@example.com',
-      userName: 'Jane',
       channelName: queryParams.propertyName || 'default',
       messages: []
     }
@@ -127,18 +131,17 @@ class Chat extends Component {
           this.getOrCreateChannel()
         })
         this.accessManager.on('tokenExpired', () => {
-          // request('/getToken?identity=' + identity + '&endpointId=' + endpointId, function(err, res) {
-          //   if (err) {
-          //     console.error('Failed to get a token ', res.text);
-          //     throw new Error(res.text);
-          //   }
-          //   console.log('Got new token!', res.text);
-          //   accessManager.updateToken(res.text);
-          // });
+          axios.get('/getChatToken?identity=' + this.state.userEmail + '&endpointId=' + endpointId).then((response, err) => {
+            if (err) {
+              console.error('Failed to get a token ', response.data)
+              throw new Error(response.text)
+            }
+            console.log('Got new token!', response.data)
+            this.accessManager.updateToken(response.data)
+          })
         })
       })
     })
-
   }
 
   onNewMessage(message) {
@@ -146,7 +149,7 @@ class Chat extends Component {
       alert('Oops, chat is not working. Please refresh')
       return
     }
-    this.activeChannel.sendMessage(message, { from: this.state.userName }).then((resp) => {
+    this.activeChannel.sendMessage(message, { from: this.props.userName }).then((resp) => {
       // ignore the response. messageAdded event will fire
     })
   }
