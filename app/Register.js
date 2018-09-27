@@ -64,6 +64,7 @@ class Register extends Component {
             name="name"
             ref={this.nameInput}
             />
+          <br />
           <input
             className="register-email"
             type="text"
@@ -71,6 +72,7 @@ class Register extends Component {
             name="email"
             ref={this.emailInput}
             />
+          <br />
           <div className="register-submit" onClick={this.submit}>{this.buttonText()}</div>
         </div>
       </div>
