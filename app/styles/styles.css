@@ -60,6 +60,11 @@ button {
   padding: 20px;
   background: linear-gradient(0deg, black, rgba(0, 0, 0, 0));
   text-align: center;
+  transition: bottom 400ms ease-in-out;
+}
+
+.property-chat-box-hidden {
+  bottom: -208px;
 }
 
 .property-chat-inner {
@@ -67,6 +72,20 @@ button {
   width: 100%;
   display: inline-block;
   text-align: left;
+}
+
+.chat-arrow {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  float: right;
+  position: relative;
+  top: 3px;
+}
+
+.chat-arrow-up {
+  transform: rotate(180deg);
+  transform-origin: 50% 50%;
 }
 
 .chat-message-wrapper {

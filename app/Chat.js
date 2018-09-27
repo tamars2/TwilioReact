@@ -18,6 +18,7 @@ class Chat extends Component {
     this.getOrCreateChannel = this.getOrCreateChannel.bind(this)
     this.joinPublicChannel = this.joinPublicChannel.bind(this)
     this.onNewMessage = this.onNewMessage.bind(this)
+    this.toggleChat = this.toggleChat.bind(this)
     this.activeChannel = null
 
     const queryParams = queryString.parse(window.location.search)
@@ -26,6 +27,7 @@ class Chat extends Component {
       token: null,
       userEmail: 'text@example.com',
       channelName: queryParams.propertyName || 'default',
+      visible: true,
       messages: []
     }
   }
@@ -153,10 +155,37 @@ class Chat extends Component {
     })
   }
 
+  toggleChat() {
+    this.setState({
+      visible: !this.state.visible
+    })
+  }
+
+  visibleClassName() {
+    if (this.state.visible) {
+      return 'property-chat-box property-chat-box-visible'
+    }
+    return 'property-chat-box property-chat-box-hidden'
+  }
+
+  arrowClassName() {
+    if (this.state.visible) {
+      return 'chat-arrow'
+    }
+    return 'chat-arrow chat-arrow-up'
+  }
+
   render() {
     return (
-      <div className="property-chat-box">
+      <div className={this.visibleClassName()}>
         <div className="property-chat-inner">
+          <img
+            className={this.arrowClassName()}
+            src="/images/arrow.png"
+            width="32"
+            height="32"
+            onClick={this.toggleChat}
+          />
           <PropertyInfo />
           <ChatMessages messages={this.state.messages} />
           <ChatInput onSubmit={this.onNewMessage} />
