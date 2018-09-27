@@ -89,7 +89,7 @@ app.get('/getChatToken', function(req, res) {
             token.identity = identity
 
             let options = {
-                maxAge: 1000 * 60 * 15, // would expire after 15 minutes
+                maxAge: 1000 * 60 * 120, // would expire after 120 minutes
                 httpOnly: false, // The cookie only accessible by the web server
                 signed: false // Indicates if the cookie should be signed
             }
