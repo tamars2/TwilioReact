@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import queryString from 'query-string'
 
 class Register extends Component {
   static props = {
@@ -11,6 +12,13 @@ class Register extends Component {
     this.submit = this.submit.bind(this)
     this.nameInput = React.createRef()
     this.emailInput = React.createRef()
+
+    const queryParams = queryString.parse(window.location.search)
+
+    this.state = {
+      propertyName: queryParams.propertyName,
+      when: queryParams.when,
+    }
   }
 
   submit() {
@@ -25,24 +33,46 @@ class Register extends Component {
       }
   }
 
+  hasStarted() {
+    const marginInMinutes = 10
+    const offsetInMinutes = (new Date(this.state.when) - Date.now())/1000/60
+    return ((offsetInMinutes-marginInMinutes) < 0)
+  }
+
+  buttonText() {
+    if (this.hasStarted()) {
+      return 'Join!'
+    }
+    return 'RSVP'
+  }
+
   render() {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    const when = new Date(this.state.when)
+    const hours = (when.getHours() > 12) ? when.getHours()-12 : when.getHours()
+    const amPM = (when.getHours() > 12) ? 'pm' : 'am'
     return (
       <div className="register">
-        <input
-          className="register-name"
-          type="text"
-          placeholder="Name"
-          name="name"
-          ref={this.nameInput}
-          />
-        <input
-          className="register-email"
-          type="text"
-          placeholder="Email"
-          name="email"
-          ref={this.emailInput}
-          />
-        <div className="register-submit" onClick={this.submit}>Send</div>
+        <div className="register-inner">
+          <img src="/images/rent-live.png" className="register-logo" />
+          <p className="register-property-name">{this.state.propertyName}</p>
+          <p className="register-when">{days[when.getDay()]} {hours}:{when.getMinutes()}{amPM}</p>
+          <input
+            className="register-name"
+            type="text"
+            placeholder="Name"
+            name="name"
+            ref={this.nameInput}
+            />
+          <input
+            className="register-email"
+            type="text"
+            placeholder="Email"
+            name="email"
+            ref={this.emailInput}
+            />
+          <div className="register-submit" onClick={this.submit}>{this.buttonText()}</div>
+        </div>
       </div>
     )
   }

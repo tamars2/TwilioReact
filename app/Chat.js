@@ -22,7 +22,6 @@ class Chat extends Component {
 
     const queryParams = queryString.parse(window.location.search)
 
-    // Oldest first
     this.state = {
       token: null,
       userEmail: 'text@example.com',
