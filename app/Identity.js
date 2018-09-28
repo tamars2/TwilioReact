@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { CookiesProvider, Cookies } from 'react-cookie';
 import VideoComponent from './VideoComponent'
 import Chat from './Chat'
+import Status from './Status'
 import Register from './Register'
 import queryString from 'query-string'
 
@@ -49,6 +50,7 @@ class Identity extends Component {
             <VideoComponent userName={this.state.userName} />
           </CookiesProvider>
           <Chat userName={this.state.userName} />
+          <Status />
         </div>
       )
     }

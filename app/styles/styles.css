@@ -216,6 +216,40 @@ button {
   margin: 12px 0 0 0;
 }
 
+.status {
+  line-height: 18px;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+.status-live-dot {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  border-radius: 12px;
+  border: 0;
+  background: #D0021B;
+}
+
+.status-live,
+.status-viewers {
+  font-weight: 600;
+  display: inline-block;
+  margin-right: 16px;
+}
+
+.status-eyeball {
+  width: 23px;
+  height: 17px;
+  display: inline-block;
+  position: relative;
+  top: -3px;
+  left: -3px;
+}
+
+
 .flex-container {
   display: flex;
   border: 1px solid green;
