@@ -58,16 +58,31 @@ class VideoComponent extends Component {
       const { identity, token } = results.data
       this.setState({ identity, token })
       // console.log('Joining room ' + this.state.propertyName + '...')
-      let connectOptions = {
-          name: this.state.propertyName
+      let connectOptions
+
+      if (this.state.view === 'viewer') {
+        connectOptions = {
+          name: this.state.propertyName,
+          audio: true,
+          // tracks: []
+        }
+      } else {
+        connectOptions  = {
+          name: this.state.propertyName,
+          audio: true,
+          video: {
+            facingMode: 'environment'
+          }
+        }
       }
+
       if (this.state.previewTracks) {
           connectOptions.tracks = this.state.previewTracks
       }
       Video.connect(this.state.token, connectOptions).then(this.roomJoined, error => {
         alert('Could not connect to Twilio: ' + error.message)
       })
-      navigator.mediaDevices.enumerateDevices().then(this.getDevices)
+      // navigator.mediaDevices.enumerateDevices().then(this.getDevices)
     })
   }
 
@@ -179,8 +194,8 @@ class VideoComponent extends Component {
   roomJoined(room) {
     window.room = room
     if (this.state.view === 'presenter') {
-      const select = document.getElementById('video-devices')
-      select.addEventListener('change', this.updateVideoDevice)
+      // const select = document.getElementById('video-devices')
+      // select.addEventListener('change', this.updateVideoDevice)
       // Called when a participant joins a room
       // console.log("Joined as '" + this.state.identity + "'")
       this.setState({
@@ -281,9 +296,9 @@ class VideoComponent extends Component {
     return (
       <div className="content">
         {this.state.view === 'presenter' && this.renderLocalTrack()} {/* Show local track if available */}
-        <div>
+        {/* <div>
           <select id="video-devices"></select>
-        </div>
+        </div> */}
         {/* The following div element shows all remote media (other participant’s tracks) */}
         {this.state.view === 'viewer' && <div ref="remoteMedia" id="remote-media" className={`orientation-${this.state.orientation}`} />}
       </div>
